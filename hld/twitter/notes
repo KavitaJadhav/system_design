@@ -1,0 +1,11 @@
+High scalibility - 
+- cloud autoscaling to manage increase/decreased load
+- Message queue 
+    - to update follower users timeline when a new tweet is added
+    - Index and update data in elastic search
+- Evantual consistant
+
+Auth service
+- separate from profile service to be able to chanage to managed service in future like aws cognito
+- 
+
