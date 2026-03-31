@@ -1,0 +1,6 @@
+https://www.youtube.com/watch?v=IUrQ5_g3XKs&list=PL5q3E8eRUieWtYLmRU3z94-vGRcwKr9tM&index=10
+
+IMPORTANT
+ - Video chunking at upload
+ - Video chunking at download - for adaptive bit rate
+ - Store manifest file i s3 - it will have chunks info.. and store reference in db

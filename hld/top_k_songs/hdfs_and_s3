@@ -1,0 +1,107 @@
+HDFS (Hadoop Distributed File System) is a distributed storage system designed to store very large datasets across multiple machines and provide high throughput access to data.
+
+**HDFS (Hadoop Distributed File System)** is a distributed storage system designed to store **very large datasets across multiple machines** and provide **high throughput access** to data.
+
+It’s a core component of the Apache Hadoop ecosystem.
+
+---
+
+## 🧠 Simple Intuition
+
+Think of HDFS like **Google Drive, but for massive data (terabytes–petabytes)**, spread across many servers instead of one machine.
+
+---
+
+## ⚙️ Key Concepts
+
+### 1. **Distributed Storage**
+
+* Files are split into **blocks** (default ~128 MB or 256 MB)
+* Each block is stored on different machines (nodes)
+
+---
+
+### 2. **Replication (Fault Tolerance)**
+
+* Each block is replicated (default = 3 copies)
+* Stored on different nodes → if one node fails, data is still safe
+
+---
+
+### 3. **Master-Slave Architecture**
+
+#### 🔹 NameNode (Master)
+
+* Stores metadata (file names, block locations)
+* Does NOT store actual data
+
+#### 🔹 DataNodes (Workers)
+
+* Store actual data blocks
+* Handle read/write operations
+
+---
+
+## 🔄 How It Works
+
+### Writing a File:
+
+1. File is split into blocks
+2. Blocks are distributed across DataNodes
+3. Each block is replicated
+4. NameNode keeps track of everything
+
+### Reading a File:
+
+1. Client asks NameNode for block locations
+2. Reads data directly from DataNodes (parallel)
+
+---
+
+## 🚀 Why HDFS?
+
+### ✅ Advantages
+
+* Scales to thousands of nodes
+* Fault-tolerant (node failures are normal)
+* High throughput (optimized for large sequential reads)
+* Cost-effective (runs on commodity hardware)
+
+---
+
+### ❌ Limitations
+
+* Not good for low-latency access (not like a database)
+* Poor for small files (metadata overhead)
+* Write-once, read-many (no frequent updates)
+
+---
+
+## 📊 When to Use HDFS
+
+* Big data pipelines
+* Batch processing (with Apache Spark or MapReduce)
+* Data lakes
+* Log storage / analytics
+
+---
+
+## 🧩 HDFS vs Traditional Storage
+
+| Feature         | HDFS         | Traditional FS |
+| --------------- | ------------ | -------------- |
+| Scale           | Massive (PB) | Limited        |
+| Fault tolerance | Built-in     | Manual         |
+| Data locality   | Yes          | No             |
+| Latency         | High         | Low            |
+
+
+
+Key Difference: HDFS vs S3
+| Feature       | HDFS               | S3             |
+| ------------- | ------------------ | -------------- |
+| Type          | Distributed FS     | Object Storage |
+| Management    | You manage cluster | Fully managed  |
+| Data locality | Yes                | No             |
+| Latency       | Lower              | Higher         |
+| Scalability   | Manual scaling     | Infinite       |

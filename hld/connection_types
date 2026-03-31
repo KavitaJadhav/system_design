@@ -1,0 +1,313 @@
+Simple Polling / SSE / WebSockets / WebRTC
+---
+
+# 🧠 1. Simple Polling
+
+**What it is:**
+Client repeatedly asks the server: *“Any updates?”* at fixed intervals.
+
+**How it works:**
+
+* Client → HTTP request every X seconds
+* Server → responds (even if nothing changed)
+
+**Pros:**
+
+* Very easy to implement
+* Works everywhere
+
+**Cons:**
+
+* Wasteful (many useless requests)
+* High latency (depends on polling interval)
+* Doesn’t scale well
+
+**Use cases:**
+
+* Basic dashboards
+* Low-frequency updates
+
+---
+
+# ⚡ 2. Server-Sent Events (SSE)
+
+**What it is:**
+Server pushes updates to client over a **single long-lived HTTP connection**.
+
+**How it works:**
+
+* Client opens connection
+* Server streams updates continuously
+
+**Direction:**
+👉 One-way (Server → Client only)
+
+**Pros:**
+
+* Efficient vs polling
+* Simple (HTTP-based)
+* Auto-reconnect built-in
+
+**Cons:**
+
+* Only server → client
+* Limited browser support vs WebSockets (but still widely supported)
+* Not ideal for binary data
+
+**Use cases:**
+
+* Notifications
+* Live feeds (stocks, logs)
+* News updates
+
+---
+
+# 🔄 3. WebSockets
+
+**What it is:**
+Full-duplex communication channel over a single TCP connection.
+
+**How it works:**
+
+* Starts as HTTP → upgraded to WebSocket
+* Both client & server can send messages anytime
+
+**Direction:**
+👉 Two-way (bi-directional)
+
+**Pros:**
+
+* Real-time, low latency
+* Efficient (no repeated headers)
+* Supports binary + text
+
+**Cons:**
+
+* More complex than SSE
+* Needs connection management (retries, scaling)
+* Harder with proxies/firewalls sometimes
+
+**Use cases:**
+
+* Chat apps
+* Multiplayer games
+* Live collaboration (Google Docs-like)
+
+---
+
+# 🎥 4. WebRTC
+
+**What it is:**
+Peer-to-peer real-time communication (audio, video, data).
+
+**How it works:**
+
+* Browser ↔ Browser (direct connection)
+* Uses signaling (often via WebSocket) to establish connection
+* Uses STUN/TURN for NAT traversal
+
+**Direction:**
+👉 Peer-to-peer (no server in data path)
+
+**Pros:**
+
+* Ultra low latency
+* Direct communication (reduces server load)
+* Built for media (video/audio)
+
+**Cons:**
+
+* Complex setup (ICE, STUN, TURN)
+* Hard to debug
+* Not ideal for simple data updates
+
+**Use cases:**
+
+* Video calls (Zoom, Meet)
+* Voice chat
+* Peer-to-peer file sharing
+
+---
+
+# ⚖️ Quick Comparison Table
+
+| Feature    | Polling         | SSE             | WebSocket      | WebRTC       |
+| ---------- | --------------- | --------------- | -------------- | ------------ |
+| Direction  | Client → Server | Server → Client | Bi-directional | Peer-to-peer |
+| Latency    | High            | Low             | Very Low       | Ultra Low    |
+| Efficiency | Poor            | Good            | Excellent      | Excellent    |
+| Complexity | Very Low        | Low             | Medium         | High         |
+| Connection | Many requests   | Single HTTP     | Persistent TCP | Direct P2P   |
+| Best For   | Simple apps     | Live feeds      | Real-time apps | Video/audio  |
+
+---
+
+# 🧩 When to Choose What (Interview Answer)
+
+* 👉 **Polling** → “When simplicity matters more than efficiency”
+* 👉 **SSE** → “When you need real-time updates but only server → client”
+* 👉 **WebSockets** → “When you need full-duplex real-time communication”
+* 👉 **WebRTC** → “When you need peer-to-peer media or ultra-low latency”
+
+
+# 💡 Golden Rule (Easy to Remember)
+
+* **Start simple → Polling**
+* **Optimize → SSE**
+* **Real-time interaction → WebSockets**
+* **Media / P2P → WebRTC**
+
+
+
+---------------------------------------------------------
+ICE, STUN, TURN
+
+These three—**ICE, STUN, TURN**—are core building blocks of WebRTC that solve one hard problem:
+
+👉 **How do two devices find and connect to each other over the internet (especially behind NAT/firewalls)?**
+
+Let’s break it down simply and then tie them together.
+
+---
+
+# 🌐 The Core Problem
+
+Most devices are behind routers (NAT), so:
+
+* They don’t have a publicly reachable IP
+* Direct connection = ❌ not straightforward
+
+---
+
+# 🧊 1. ICE (Interactive Connectivity Establishment)
+
+**What it is:**
+A framework/algorithm that figures out **how two peers can connect**
+
+**What it does:**
+
+* Collects all possible connection paths (called *candidates*)
+* Tries them one by one
+* Picks the best working path
+
+**Think of it as:**
+👉 “Connection orchestrator / decision maker”
+
+**Types of candidates ICE gathers:**
+
+* Host (local IP)
+* Server reflexive (via STUN)
+* Relay (via TURN)
+
+---
+
+# 🛰️ 2. STUN (Session Traversal Utilities for NAT)
+
+**What it is:**
+A lightweight server that tells you:
+
+👉 “This is your public IP and port”
+
+**How it works:**
+
+1. Client sends request to STUN server
+2. Server replies with:
+
+   * Your public IP
+   * Your mapped port
+
+**Why it helps:**
+
+* Enables **direct peer-to-peer connection**
+
+**Pros:**
+
+* Fast
+* Cheap
+* No data relay (only discovery)
+
+**Cons:**
+
+* Doesn’t work with strict NATs (symmetric NAT)
+
+**Think of it as:**
+👉 “What is my public address?” service
+
+---
+
+# 🔁 3. TURN (Traversal Using Relays around NAT)
+
+**What it is:**
+A relay server that **forwards data between peers**
+
+**How it works:**
+
+* If direct connection fails:
+
+  * Client A → TURN → Client B
+  * All traffic goes through TURN server
+
+**Why needed:**
+
+* Works even with strict NAT/firewalls
+
+**Pros:**
+
+* Reliable fallback
+* Works in almost all cases
+
+**Cons:**
+
+* Expensive (server bandwidth)
+* Adds latency
+
+**Think of it as:**
+👉 “Middleman delivering messages”
+
+---
+
+# 🔗 How They Work Together
+
+**Step-by-step in WebRTC:**
+
+1. ICE starts gathering candidates
+2. Uses STUN to get public IPs
+3. Exchanges candidates between peers (via signaling server)
+4. ICE tries:
+
+   * Direct connection (best case)
+5. If fails → uses TURN relay
+
+---
+
+# ⚖️ Simple Analogy
+
+* **ICE** = Matchmaker trying different ways to connect two people
+* **STUN** = “Here’s your public phone number”
+* **TURN** = “If you can’t call directly, talk through me”
+
+---
+
+# ⚡ Interview One-Liner
+
+👉
+**“ICE coordinates connection establishment, STUN helps discover public addresses for direct P2P, and TURN acts as a fallback relay when direct connection fails.”**
+
+---
+
+# 🧠 When Each is Used
+
+| Scenario              | Used                  |
+| --------------------- | --------------------- |
+| Same network          | ICE (host candidates) |
+| NAT but compatible    | STUN + ICE            |
+| Strict NAT / firewall | TURN + ICE            |
+
+---
+
+# 💡 Key Insight (Important for Interviews)
+
+👉 **Goal is ALWAYS: avoid TURN if possible**
+
+* Because TURN = costly + slower
+* STUN = preferred (direct connection)

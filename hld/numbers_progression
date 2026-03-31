@@ -1,0 +1,31 @@
+Basic progression
+0 → Zero
+10 → Ten
+100 → Hundred
+1,000 → Thousand
+10,000 → Ten thousand
+100,000 → Hundred thousand
+1,000,000 → Million
+1,000,000,000 → Billion
+1,000,000,000,000 → Trillion
+
+Table
+| Number | Name     |
+| ------ | -------- |
+| 10¹    | Ten      |
+| 10²    | Hundred  |
+| 10³    | Thousand |
+| 10⁶    | Million  |
+| 10⁹    | Billion  |
+| 10¹²   | Trillion |
+
+🇮🇳 Indian vs 🌍 International Numbering
+| Number            | Indian System | International System |
+| ----------------- | ------------- | -------------------- |
+| 1,000             | Thousand      | Thousand             |
+| 1,00,000          | Lakh          | 100 Thousand         |
+| 10,00,000         | 10 Lakh       | 1 Million            |
+| 1,00,00,000       | Crore         | 10 Million           |
+| 10,00,00,000      | 10 Crore      | 100 Million          |
+| 1,00,00,00,000    | 100 Crore     | 1 Billion            |
+| 1,00,00,00,00,000 | 1 Lakh Crore  | 1 Trillion           |

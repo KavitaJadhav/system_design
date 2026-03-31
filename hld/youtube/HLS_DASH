@@ -1,0 +1,108 @@
+**HLS vs DASH** are the two most widely used adaptive streaming protocols for delivering video over the internet. They solve the same problem—smooth playback across varying network conditions—but differ in ecosystem, format, and behavior.
+
+---
+
+## 🧠 What they are (simple view)
+
+* **HLS (HTTP Live Streaming)**
+  Developed by Apple. Streams video in small chunks over HTTP using `.m3u8` playlists.
+
+* **MPEG-DASH (Dynamic Adaptive Streaming over HTTP)**
+  An open international standard developed by ISO/IEC. Uses `.mpd` manifest files.
+
+---
+
+## ⚙️ How they work (common idea)
+
+Both:
+
+* Split video into **small segments (2–10 seconds)**
+* Encode video at **multiple bitrates/resolutions**
+* Player dynamically switches quality based on:
+
+  * network speed
+  * buffer health
+  * device capability
+
+---
+
+## 🔍 Key Differences
+
+| Feature                 | HLS                                                  | DASH                                     |
+| ----------------------- | ---------------------------------------------------- | ---------------------------------------- |
+| **Origin**              | Apple                                                | Open standard (ISO)                      |
+| **Manifest file**       | `.m3u8`                                              | `.mpd`                                   |
+| **Codec support**       | Historically limited (H.264, AAC), now supports HEVC | More flexible (AV1, VP9, HEVC, etc.)     |
+| **Browser support**     | Native on Safari/iOS                                 | Native in most modern browsers (via MSE) |
+| **Latency**             | Higher (traditional HLS)                             | Lower (especially Low-Latency DASH)      |
+| **Low-latency support** | LL-HLS (newer)                                       | LL-DASH (earlier maturity)               |
+| **DRM support**         | FairPlay (Apple ecosystem)                           | Widevine, PlayReady, etc.                |
+| **Adoption**            | Very high (especially Apple devices)                 | Very high (Android, Smart TVs, web)      |
+
+---
+
+## 📱 Platform Support
+
+* **HLS**
+
+  * Best for: iPhone, iPad, Safari
+  * Required for Apple ecosystem
+
+* **DASH**
+
+  * Best for: Android, Chrome, Firefox, Smart TVs
+  * Needs JavaScript player (e.g., Shaka, dash.js)
+
+---
+
+## ⚡ Latency Comparison
+
+* Traditional HLS → ~15–30 sec delay
+* LL-HLS → ~2–5 sec
+* DASH → ~3–10 sec (LL-DASH even lower)
+
+👉 For **live streaming (sports, betting, real-time apps)** → DASH or LL-HLS preferred.
+
+---
+
+## 🧩 When to Use What
+
+**Use HLS when:**
+
+* You need **iOS/Safari compatibility**
+* Simpler ecosystem is preferred
+* Broad CDN support needed
+
+**Use DASH when:**
+
+* You want **codec flexibility (AV1, VP9)**
+* Need **fine control over streaming**
+* Targeting web + Android heavily
+
+---
+
+## 🧠 Industry Practice
+
+Most production systems actually do:
+
+👉 **Encode once → package as BOTH HLS + DASH**
+
+Used by:
+
+* Netflix
+* YouTube
+* Amazon Prime Video
+
+---
+
+## 🎯 Interview-Ready Summary
+
+> HLS and DASH are adaptive bitrate streaming protocols over HTTP. HLS is Apple-driven and widely supported on iOS, while DASH is an open standard with broader codec flexibility. Modern systems often support both to ensure compatibility across all devices.
+
+---
+
+If you want, I can also explain:
+
+* How players switch bitrate (ABR algorithms)
+* HLS/DASH architecture in system design interviews
+* Real-world pipeline (encoding → packaging → CDN → player)
