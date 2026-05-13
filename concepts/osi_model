@@ -1,0 +1,146 @@
+========================================
+OSI MODEL – 7 LAYERS QUICK NOTES
+========================================
+
+🔹 What is OSI Model?
+- Open Systems Interconnection (OSI)
+- Conceptual model for network communication
+- Divides communication into 7 layers
+- Each layer has a specific role
+- Helps in design, debugging, and standardization
+
+Data Flow:
+Sender → Layer 7 → ... → Layer 1 → Network → Layer 1 → ... → Layer 7 → Receiver
+
+--------------------------------------------------
+
+🔹 7 Layers (Top → Bottom)
+
+7) Application Layer
+- Closest to user
+- Interface for applications
+
+Examples:
+- HTTP, FTP, SMTP
+
+Function:
+- User interaction with network
+
+--------------------------------------------------
+
+6) Presentation Layer
+- Data formatting & transformation
+
+Functions:
+- Encryption / Decryption
+- Compression
+- Data format conversion
+
+--------------------------------------------------
+
+5) Session Layer
+- Manages connection/session
+
+Functions:
+- Start / maintain / end sessions
+- Checkpoints, recovery
+
+--------------------------------------------------
+
+4) Transport Layer
+- End-to-end communication
+
+Protocols:
+- TCP (reliable)
+- UDP (fast)
+
+Functions:
+- Segmentation
+- Flow control
+- Error handling
+
+--------------------------------------------------
+
+3) Network Layer
+- Logical addressing & routing
+
+Protocols:
+- IP
+
+Functions:
+- Path selection
+- Packet routing
+
+--------------------------------------------------
+
+2) Data Link Layer
+- Node-to-node communication
+
+Functions:
+- Framing
+- MAC addressing
+- Error detection
+
+Example:
+- Ethernet
+
+--------------------------------------------------
+
+1) Physical Layer
+- Hardware layer
+
+Functions:
+- Transmits raw bits (0/1)
+- Electrical signals, cables, wireless
+
+--------------------------------------------------
+
+🔹 Layer Grouping
+
+Upper Layers (5–7):
+- Application-related (user interaction)
+
+Middle Layer (4):
+- Transport (reliability)
+
+Lower Layers (1–3):
+- Network + hardware transmission
+
+--------------------------------------------------
+
+🔹 Key Concepts
+
+- Each layer serves the one above it
+- Data encapsulation at each layer
+- Abstraction simplifies complexity
+- Helps isolate issues (debugging)
+
+--------------------------------------------------
+
+🔹 Mnemonic (Top → Bottom)
+
+"All People Seem To Need Data Processing"
+
+A → Application
+P → Presentation
+S → Session
+T → Transport
+N → Network
+D → Data Link
+P → Physical
+
+--------------------------------------------------
+
+🔹 Common Interview Points
+
+- OSI is a reference model (not exact implementation)
+- TCP/IP model is used in real systems
+- Layers help in troubleshooting:
+  - L1 → cables issue
+  - L3 → routing issue
+  - L7 → API issue
+
+--------------------------------------------------
+
+🧠 One-liner:
+OSI model divides network communication into 7 layers to simplify design, communication, and troubleshooting.

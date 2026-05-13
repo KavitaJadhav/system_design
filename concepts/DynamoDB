@@ -1,0 +1,165 @@
+=================================
+DYNAMODB – QUICK INTERVIEW NOTES
+=================================
+
+🔹 What is DynamoDB?
+- Fully managed NoSQL DB (key-value + document)
+- Serverless → no infrastructure management
+- Designed for high scale + low latency (milliseconds)
+- Common in serverless apps (APIs, Lambda)
+
+--------------------------------------------------
+
+🔹 Data Model
+
+Table:
+- Collection of items (like rows)
+
+Item:
+- Single record (JSON-like)
+
+Attributes:
+- Key-value pairs inside item
+
+Primary Key:
+1) Partition Key (PK)
+   - Determines data distribution
+2) Composite Key (PK + Sort Key)
+   - Enables grouping + range queries
+
+Key Points:
+- Data distributed via hashing of partition key
+- Use high-cardinality PK → avoid hot partitions
+- Schema-less design
+- Model based on access patterns (NOT normalization)
+
+--------------------------------------------------
+
+🔹 Indexing
+
+Why:
+- Support multiple query patterns
+
+Types:
+
+1) Local Secondary Index (LSI)
+- Same partition key, different sort key
+
+2) Global Secondary Index (GSI)
+- Different partition + sort key
+- Enables new access patterns
+
+Trade-offs:
+- More indexes → higher write cost
+- Avoid excessive GSIs
+
+--------------------------------------------------
+
+🔹 Basic Operations
+
+- PutItem → insert/update
+- GetItem → fetch by PK
+- Query → efficient (uses PK)
+- Scan → expensive (avoid)
+
+--------------------------------------------------
+
+🔹 Capacity Modes
+
+1) Provisioned:
+- Define read (RCU) and write (WCU) capacity
+
+2) On-Demand:
+- Auto scaling
+- Pay per request
+
+Pricing based on:
+- Reads
+- Writes
+- Storage
+
+--------------------------------------------------
+
+🔹 Architecture
+
+Partitioning:
+- Data split across nodes using PK hashing
+
+Replication:
+- Multi-AZ replication → high availability
+
+Storage:
+- SSD-backed for fast performance
+
+Internal:
+- Uses hashing + tree structures
+
+Scalability:
+- Handles millions of requests/sec automatically
+
+--------------------------------------------------
+
+🔹 Advanced Features
+
+Streams:
+- Capture real-time data changes
+- Used in event-driven systems
+
+TTL (Time To Live):
+- Auto-delete expired data
+
+Global Tables:
+- Multi-region replication (active-active)
+
+Transactions:
+- ACID support across multiple items
+
+DAX (DynamoDB Accelerator):
+- In-memory cache
+- Microsecond latency
+
+--------------------------------------------------
+
+🔹 When to Use
+
+Best for:
+- High-scale applications
+- Low-latency workloads
+- Event-driven systems
+
+Examples:
+- Gaming leaderboards
+- IoT data ingestion
+- User sessions
+- Shopping carts
+
+--------------------------------------------------
+
+🔹 Design Concepts
+
+Denormalization:
+- Store redundant data
+- Avoid joins
+
+Single Table Design:
+- Multiple entity types in one table
+- Use PK + SK patterns
+
+Access Pattern First:
+- Design schema based on queries
+- Hard to change later
+
+--------------------------------------------------
+
+🔹 Key Interview Points
+
+- DynamoDB = scalable, distributed NoSQL DB
+- Partition key design is CRITICAL
+- Query > Scan (always prefer Query)
+- Avoid hot partitions
+- Avoid too many GSIs
+
+--------------------------------------------------
+
+🧠 One-liner:
+DynamoDB is a scalable NoSQL database where schema design is driven by access patterns and partition keys.

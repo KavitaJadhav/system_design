@@ -1,0 +1,119 @@
+drivers = [
+  (id=1, x=1, y=2),
+  (id=2, x=3, y=4),
+  (id=3, x=1, y=-1)
+]
+rider = (0, 0)
+k = 2
+[1, 3]
+
+class Driver
+    attribute_accesser :id, :x, :y, :distance
+end
+class Rider
+    attribute_accesser :x, :y
+end
+
+class Heap
+    @drivers = []
+    @size = 0
+
+
+    def push(value)
+        @drivers.push(value)
+        heapfy_up
+        @size+=1
+    end
+
+    def pop
+        element = @drivers[0]
+        @drivers[0], @drivers[@size-1] = @drivers[@size-1], nil
+        @size-=1
+        heapfy_down
+        element
+    end
+
+    private
+    def heapfy_down
+    parent_index = 0
+        loop do
+            left_child = (parent_index * 2) + 1
+            right_child = (parent_index * 2) + 2
+
+        break if(left_child>=@size && right_child >= @size)
+        if(left_child<@size && @drivers[left_child].distance < @drivers[parent].distance)
+            @drivers[left_child] , @drivers[parent] =   @drivers[parent], @drivers[left_child]
+        elsif(right_child<@size && @drivers[right_child].distance < @drivers[parent].distance)
+                    @drivers[right_child] , @drivers[parent] =   @drivers[parent], @drivers[right_child]
+
+        end
+    end
+
+    def heapfy_up
+    loop do
+        nodeIndex = @drivers.last - 1
+        parent_index = (nodeIndex - 1)/2
+
+        break if( parent_index<0)
+
+        if @drivers[parent_index].distance < @drivers[nodeIndex].distance
+            @drivers[parent_index], @drivers[nodeIndex] = @drivers[nodeIndex] ,  @drivers[parent_index]
+    end
+    end
+end
+
+def k_closest(drivers,rider,  k)
+    heap = new Heap
+
+    drivers.each do |driver|
+    driver.distance = ((rider.x - driver.x) * (rider.x - driver.x)) + ((rider.y - driver.y) * (rider.y - driver.y))
+        heap.add(driver)
+        heap.pop if heap.size > k
+    end
+
+    heap.drivers.sort(distance, id).map(&:id)
+end
+
+k_closest([Driver.new(id:1, x:1, y:2),Driver.new(id:2, x:3, y:4),Driver.new(id:3, x:1, y:-1)], Rider.new(x: 0, y:0), 2)
+
+
+
+
+
+
+
+
+
+
+
+
+def get_fair(base_fair, requests, drivers)
+    result = []
+    for index in 0..requests.size-1 do
+        if(drivers[index] = 0)
+             result[index] = 0
+        elsif(requests[index]>drivers[index])
+            (requests[index]/drivers[index]).to_f * base_fair * requests[index]
+        else
+            result[index] = base_fair * requests[index]
+        end
+    end
+    result
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

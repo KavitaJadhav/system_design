@@ -1,0 +1,312 @@
+Here is your **clean, easily copyable TXT format** (no boxes, no formatting issues):
+
+---
+
+DATABASE ENGINE – REVISION NOTES
+Components & What Happens Behind an SQL Query
+
+---
+
+HIGH LEVEL FLOW
+Client → Query Parser → Optimizer → Execution Engine → Storage Engine → Disk
+
+---
+
+1. CLIENT LAYER
+
+Components:
+
+* Application / User
+* ORM / ODM (e.g., ActiveRecord, Hibernate)
+
+Role:
+
+* Sends SQL query to database
+
+Example:
+SELECT * FROM users WHERE id = 10;
+
+---
+
+2. QUERY PARSER
+
+Steps:
+
+1. Lexical Analysis (Tokenization)
+
+* Breaks query into tokens
+* Example: SELECT, FROM, WHERE
+
+2. Syntax Analysis
+
+* Validates SQL grammar
+* Builds AST (Abstract Syntax Tree)
+
+3. Semantic Analysis
+
+* Checks table existence
+* Validates column names
+* Checks permissions
+
+Output:
+
+* AST (tree representation of query)
+
+---
+
+3. QUERY OPTIMIZER
+
+Goal:
+
+* Find most efficient execution plan
+
+Steps:
+
+1. Logical Plan
+
+* Defines WHAT needs to be done
+
+2. Physical Plan
+
+* Defines HOW to execute
+
+Key Decisions:
+
+* Full table scan vs index scan
+* Join strategies (nested loop, hash join, merge join)
+* Order of execution
+
+Uses:
+
+* Table statistics
+* Index metadata
+* Cost estimation
+
+Output:
+
+* Optimized execution plan
+
+---
+
+4. EXECUTION ENGINE
+
+Role:
+
+* Executes the optimized plan
+
+Responsibilities:
+
+* Fetch rows from storage engine
+* Apply filters (WHERE)
+* Perform joins and aggregations
+
+---
+
+5. CACHE LAYER
+
+Types:
+
+* Query cache
+* Buffer pool (data cache)
+
+Role:
+
+* Reduce disk reads
+* Store frequently accessed data
+
+Example:
+
+* Repeated query can be served from cache
+
+---
+
+6. TRANSACTION MANAGER
+
+Role:
+
+* Maintains ACID properties
+
+ACID:
+
+* Atomicity: all or nothing
+* Consistency: valid state
+* Isolation: no interference
+* Durability: persists after crash
+
+Example:
+BEGIN;
+UPDATE users SET balance = balance - 100;
+UPDATE users SET balance = balance + 100;
+COMMIT;
+
+---
+
+7. LOCK MANAGER
+
+Role:
+
+* Handles concurrency
+
+Types:
+
+* Shared lock (read)
+* Exclusive lock (write)
+
+Example:
+
+* Prevents simultaneous conflicting updates
+
+Data Structure:
+
+* Lock table
+
+---
+
+8. RECOVERY MANAGER
+
+Role:
+
+* Handles crash recovery
+
+Uses:
+
+* Write-Ahead Logging (WAL)
+* Append-only logs
+
+Process:
+
+* Log is written before data changes
+* On crash, logs are replayed
+
+---
+
+9. STORAGE ENGINE
+
+Role:
+
+* Handles data storage and retrieval
+
+Responsibilities:
+
+* Read/write to disk
+* Manage indexes
+* Manage data files
+
+Types:
+
+* Row-based (OLTP)
+* Column-based (OLAP)
+
+---
+
+10. DATA STORAGE (DISK)
+
+Components:
+
+1. Data Files
+
+* Store actual table data
+
+2. Index Files
+
+* Store metadata for fast lookup
+
+Index Types:
+
+* B-Tree
+* B+ Tree (most common)
+* Hash index
+
+Example:
+
+* Index search → O(log n)
+* Full scan → O(n)
+
+---
+
+FULL QUERY EXECUTION FLOW
+
+Example Query:
+SELECT name FROM users WHERE id = 10;
+
+Steps:
+
+1. Client sends query
+
+2. Parser
+
+* Validates syntax
+* Builds AST
+
+3. Optimizer
+
+* Chooses best plan (e.g., index scan)
+
+4. Execution Engine
+
+* Executes plan
+
+5. Cache Check
+
+* If data present → return
+* Else → fetch from disk
+
+6. Storage Engine
+
+* Reads data/index files
+
+7. Lock Manager
+
+* Ensures safe concurrent access
+
+8. Transaction Manager
+
+* Ensures ACID compliance
+
+9. Result returned to client
+
+---
+
+PERFORMANCE OPTIMIZATION POINTS
+
+* Use indexes (B+ tree)
+* Avoid full table scans
+* Use caching effectively
+* Optimize joins
+* Reduce data reads
+
+---
+
+INTERVIEW ONE-LINERS
+
+* Parser builds AST
+* Optimizer selects best execution plan
+* Execution engine runs query
+* Storage engine interacts with disk
+* WAL ensures durability
+* Locks ensure concurrency
+* Cache improves performance
+
+---
+
+REAL-WORLD MAPPING
+
+* Query optimizer → PostgreSQL planner
+* Cache → MySQL InnoDB buffer pool
+* WAL → PostgreSQL WAL
+* Index → B+ tree
+* Locking → MVCC
+
+---
+
+INTERVIEW SUMMARY ANSWER
+
+The query is parsed into an AST, optimized into an execution plan using cost-based optimization, and executed by the execution engine. The storage engine retrieves data from disk or cache, while transaction, lock, and recovery managers ensure ACID properties and concurrency control.
+
+---
+
+If you want, I can also convert this into:
+
+* 1-page ultra-short revision sheet
+* diagram you can draw in interviews
+* tricky DB internals interview questions

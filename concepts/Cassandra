@@ -1,0 +1,208 @@
+https://www.youtube.com/watch?v=TD3-INhm60Q
+========================================
+APACHE CASSANDRA – SYSTEM DESIGN NOTES
+========================================
+
+🔹 What is Cassandra?
+- Distributed NoSQL (wide-column) database
+- Masterless (peer-to-peer architecture)
+- Designed for:
+  - High scalability
+  - High availability
+  - No single point of failure
+- Inspired by:
+  - Amazon Dynamo (distribution)
+  - Google Bigtable (data model)
+
+Key Traits:
+- Eventually consistent (tunable consistency)
+- Write-optimized system
+- Handles massive data (TBs–PBs)
+
+--------------------------------------------------
+
+🔹 Data Model (Query-Driven)
+
+Keyspace:
+- Like a database
+- Defines replication strategy
+
+Table:
+- Collection of rows (distributed)
+
+Primary Key:
+- Partition Key + Clustering Columns
+
+Partition Key:
+- Determines data placement (critical for scaling)
+
+Clustering Columns:
+- Define sorting within partition
+
+Wide-Column Model:
+- Flexible schema (rows can differ)
+
+Important:
+- No joins
+- No foreign keys
+- No cross-partition queries
+- Design based on access patterns
+
+--------------------------------------------------
+
+🔹 Scalability
+
+- Horizontal scaling (add nodes → more capacity)
+- Linear scalability
+
+Core Concepts:
+- Consistent Hashing → distributes data
+- Token Ring → each node owns a range
+
+Advantages:
+- No central bottleneck
+- Uses commodity hardware
+
+--------------------------------------------------
+
+🔹 High Availability & Fault Tolerance
+
+- Masterless → any node handles requests
+- Replication Factor (RF) → multiple copies
+
+Failure Handling:
+- Other replicas serve data
+- Hinted handoff + repair mechanisms
+
+Result:
+- Always available system
+
+--------------------------------------------------
+
+🔹 CAP Theorem
+
+C → Consistency
+A → Availability
+P → Partition Tolerance
+
+Cassandra:
+- AP system (Availability + Partition tolerance)
+- Uses tunable consistency
+
+Consistency Levels:
+- ONE → fastest, less consistent
+- QUORUM → balanced
+- ALL → strongest, slowest
+
+Trade-off:
+- Higher consistency = higher latency
+
+--------------------------------------------------
+
+🔹 Write Path (Very Important ⭐)
+
+Flow:
+Write Request
+   ↓
+Commit Log (durability)
+   ↓
+Memtable (in-memory)
+   ↓
+SSTable (disk, immutable)
+
+Key Points:
+- Sequential writes → very fast
+- No random disk I/O
+- Based on LSM-tree design
+
+--------------------------------------------------
+
+🔹 Read Path
+
+Flow:
+- Check Memtable
+- Check Cache
+- Read SSTables
+- Merge results
+
+Optimizations:
+- Bloom Filters → avoid disk reads
+- Partition Index → faster lookup
+
+Trade-off:
+- Reads slower than writes (merge cost)
+
+--------------------------------------------------
+
+🔹 Denormalization
+
+Rule:
+- Design for queries, NOT normalization
+
+Why:
+- No joins supported
+- Distributed joins are expensive
+
+Approach:
+- Duplicate data across tables
+
+Example:
+- orders_by_user
+- orders_by_date
+- orders_by_status
+
+Pros:
+- Fast reads
+
+Cons:
+- Data duplication
+- More storage usage
+
+--------------------------------------------------
+
+🔹 When to Use Cassandra
+
+Best For:
+- Large-scale systems (TBs/PBs)
+- Write-heavy workloads
+- Time-series data (logs, metrics)
+- Distributed/global applications
+
+Examples:
+- Messaging systems
+- Activity feeds
+- IoT data ingestion
+
+--------------------------------------------------
+
+🔹 When NOT to Use
+
+- Complex joins required
+- Strong ACID transactions needed
+- Small-scale applications
+
+--------------------------------------------------
+
+🔹 Real-World Usage (Patterns)
+
+- Social media feeds
+- Streaming platforms
+- Ride-sharing systems
+- Event logging pipelines
+- Telecom + IoT systems
+
+--------------------------------------------------
+
+🔹 Key Interview Points
+
+- Masterless distributed DB
+- AP system with tunable consistency
+- Write-optimized (Commit Log + Memtable + SSTable)
+- Query-based data modeling
+- Denormalization is required
+- Linear scalability via consistent hashing
+
+--------------------------------------------------
+
+🧠 One-liner:
+Cassandra is a highly available, distributed NoSQL database optimized for write-heavy workloads and designed around partition keys and access patterns.

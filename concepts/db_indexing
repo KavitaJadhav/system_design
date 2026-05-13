@@ -1,0 +1,171 @@
+https://www.youtube.com/watch?v=BHCSL_ZifI0&list=PL5q3E8eRUieUHnsz0rh0W6AzwdVJBwEK6&index=5
+
+===============================
+DATABASE INDEXING – QUICK NOTES
+===============================
+
+🔹 What is Index?
+- Data structure to speed up reads (value → row pointer)
+- Avoids full table scan
+- Complexity:
+  - No index → O(N)
+  - B-Tree → O(log N)
+  - Hash → O(1)
+
+--------------------------------------------------
+
+🔹 Why Index?
++ Faster SELECT queries
++ Efficient filtering, sorting, joins
+
+- Slower writes (INSERT/UPDATE/DELETE)
+- Extra storage + maintenance
+
+--------------------------------------------------
+
+🔹 Core Index Types
+
+1) B-Tree Index (Most Common ⭐)
+- Balanced tree (often B+ Tree internally)
+- Supports:
+  =, >, <, BETWEEN, ORDER BY, LIKE 'abc%'
+- Time: O(log N)
+
+Use:
+- Range queries
+- Sorting
+- General-purpose indexing
+
+Avoid:
+- Low-cardinality columns (few unique values)
+
+--------------------------------------------------
+
+2) Hash Index
+- Uses hash table
+- Time: O(1)
+
+Use:
+- Exact match → WHERE id = X
+
+Avoid:
+- Range queries
+- Sorting
+- Prefix search
+
+--------------------------------------------------
+
+3) Bitmap Index
+- Bit arrays (1 bit per row)
+
+Use:
+- Low-cardinality columns (gender, status)
+- Analytics / data warehouse
+
+Avoid:
+- Frequent updates (costly to maintain)
+
+--------------------------------------------------
+
+4) R-Tree Index (Spatial)
+- Multi-dimensional structure
+
+Use:
+- Geo queries (maps, distance search)
+
+--------------------------------------------------
+
+🔹 Important Index Variants
+
+Clustered Index
+- Data physically stored in sorted order
+- Only ONE per table
+- Faster range scans
+
+Non-Clustered Index
+- Separate structure with pointers to rows
+- Multiple allowed
+
+--------------------------------------------------
+
+Composite Index
+- Index on multiple columns (col1, col2)
+
+Leftmost Prefix Rule:
+- Works → col1, (col1, col2)
+- Does NOT work → col2 alone
+
+--------------------------------------------------
+
+Covering Index
+- Index contains ALL required columns
+- No table lookup needed (very fast)
+
+--------------------------------------------------
+
+Partial Index
+- Index only subset of rows
+Example:
+  WHERE status = 'ACTIVE'
+
+--------------------------------------------------
+
+🔹 When to Use Index?
++ Columns in WHERE, JOIN, ORDER BY
++ High selectivity (many unique values)
++ Large tables
+
+Avoid:
+- Small tables
+- Heavy write workloads
+- Low-cardinality columns
+
+--------------------------------------------------
+
+🔹 Key Concepts
+
+Selectivity:
+- Measure of uniqueness
+- Higher = better index performance
+
+Cardinality:
+- Number of distinct values in a column
+
+--------------------------------------------------
+
+🔹 Trade-offs
+
+Reads     → ✅ Faster
+Writes    → ❌ Slower
+Storage   → ❌ More
+Maintenance → ❌ Required (rebalancing, updates)
+
+--------------------------------------------------
+
+🔹 Common Interview Questions
+
+Q: Why not index every column?
+A: Slows writes, uses memory, optimizer may ignore
+
+Q: B-Tree vs Hash?
+A:
+- B-Tree → versatile (range + sort)
+- Hash → fastest for exact match only
+
+Q: What is a covering index?
+A: Index that satisfies query without table access
+
+--------------------------------------------------
+
+🔹 Quick Tips (Interview Gold ⭐)
+
+- Prefer B-Tree in most cases
+- Avoid "SELECT *" → helps covering index
+- Use composite index for frequent multi-column queries
+- Order of columns in composite index matters
+- Avoid over-indexing
+
+--------------------------------------------------
+
+🧠 One-liner:
+Index improves read performance using structures like B-Trees/Hash, at the cost of slower writes and extra storage.

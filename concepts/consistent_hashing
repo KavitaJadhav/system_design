@@ -1,0 +1,131 @@
+https://www.youtube.com/watch?v=vccwdhfqIrI
+
+========================================
+CONSISTENT HASHING – QUICK NOTES
+========================================
+
+🔹 What is Consistent Hashing?
+- Distributed hashing technique used in scalable systems
+- Maps BOTH:
+  → Nodes (servers)
+  → Keys (data)
+  onto a virtual ring (hash ring)
+
+Goal:
+- Minimize data movement when nodes are added/removed
+
+--------------------------------------------------
+
+🔹 Why not simple hashing?
+
+Normal approach:
+  index = hash(key) % N
+
+Problem:
+- If N changes (add/remove server)
+  → Almost ALL keys get remapped
+  → Cache/database becomes useless
+
+Example:
+- 100 servers → add 101st server
+→ ~99% keys move ❌
+
+--------------------------------------------------
+
+🔹 Core Idea (Hash Ring)
+
+- Hash space forms a circle (0 → MAX)
+- Nodes are placed on the ring using hash(node)
+- Keys are placed using hash(key)
+- Key goes to FIRST node clockwise
+
+Rule:
+  key → next node on the ring (clockwise)
+
+--------------------------------------------------
+
+🔹 How it works (step-by-step)
+
+1) Hash all servers → place on ring
+2) Hash key → locate position on ring
+3) Move clockwise
+4) First server encountered stores the key
+
+--------------------------------------------------
+
+🔹 What happens when nodes change?
+
+✔ Node added:
+- Only keys in its range shift to new node
+
+✔ Node removed:
+- Only its keys move to next node
+
+Impact:
+- Only ~1/N keys get redistributed
+- NOT entire dataset
+
+--------------------------------------------------
+
+🔹 Virtual Nodes (VNodes)
+
+Problem:
+- Uneven distribution of keys
+
+Solution:
+- Each physical server = multiple virtual nodes
+
+Benefits:
+- Better load balancing
+- Avoid hotspots
+- More uniform key distribution
+
+--------------------------------------------------
+
+🔹 Why it is used
+
+Used in:
+- Distributed caches (Redis, Memcached)
+- NoSQL databases (Cassandra, Dynamo-style systems)
+- Load balancers
+- CDNs
+
+--------------------------------------------------
+
+🔹 Advantages
+
++ Minimal data movement on scaling
++ Highly scalable
++ Fault tolerant
++ Works well in dynamic clusters
+
+--------------------------------------------------
+
+🔹 Disadvantages
+
+- More complex than modulo hashing
+- Requires ring management
+- Uneven load possible without virtual nodes
+- Hot keys still possible
+
+--------------------------------------------------
+
+🔹 Complexity
+
+- Lookup: O(log N) (or O(1) with optimizations)
+- Rebalancing: only partial key movement (~1/N)
+
+--------------------------------------------------
+
+🔹 Key Interview Points
+
+- Fixes drawback of hash(key) % N
+- Uses circular hash space (ring)
+- Key → nearest clockwise node
+- Virtual nodes improve balance
+- Core concept in distributed systems
+
+--------------------------------------------------
+
+🧠 One-liner:
+Consistent hashing is a technique that maps keys and nodes onto a hash ring so that only a minimal number of keys move when nodes are added or removed.

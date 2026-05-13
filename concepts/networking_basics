@@ -1,0 +1,254 @@
+https://www.youtube.com/watch?v=SHkbPm1Wrno
+
+====================================================
+NETWORKING BASICS – SYSTEM DESIGN QUICK NOTES
+====================================================
+
+🔹 OSI Model (7 Layers)
+- Conceptual model for network communication
+- Splits networking into layers for abstraction
+
+Layers (Top → Bottom):
+7. Application → HTTP, APIs
+6. Presentation → Encoding, Encryption
+5. Session → Connection management
+4. Transport → TCP / UDP
+3. Network → IP (routing)
+2. Data Link → MAC, frames
+1. Physical → Bits, cables
+
+Key Idea:
+- Each layer has a specific responsibility
+- Helps modular design and debugging :contentReference[oaicite:0]{index=0}
+
+--------------------------------------------------
+
+🔹 HTTP Request Breakdown
+
+Flow:
+Client → DNS → Server → Response
+
+HTTP Request:
+- Method → GET, POST, PUT, DELETE
+- Headers → metadata
+- Body → data (optional)
+
+Response:
+- Status code → 200, 404, 500
+- Headers + Body
+
+👉 Stateless protocol (no memory between requests)
+
+--------------------------------------------------
+
+🔹 Internet Protocol (IP)
+
+- Responsible for addressing + routing packets
+- Each device has unique IP address
+- Sends packets from source → destination
+
+Key:
+- Unreliable (best-effort delivery)
+- No guarantee of order or delivery :contentReference[oaicite:1]{index=1}
+
+--------------------------------------------------
+
+🔹 TCP vs UDP (Transport Layer)
+
+TCP:
+- Connection-oriented
+- Reliable, ordered delivery
+- Retransmission + congestion control
+
+UDP:
+- Connectionless
+- No guarantee of delivery/order
+- Faster, low overhead
+
+👉 Trade-off:
+- TCP = reliability
+- UDP = speed :contentReference[oaicite:2]{index=2}
+
+--------------------------------------------------
+
+🔹 HTTP (HyperText Transfer Protocol)
+
+- Runs on top of TCP
+- Request-response model
+- Stateless
+
+Versions:
+- HTTP/1.1 → basic
+- HTTP/2 → multiplexing
+- HTTP/3 → uses UDP (QUIC)
+
+--------------------------------------------------
+
+🔹 REST (Representational State Transfer)
+
+- Architectural style for APIs
+- Uses HTTP methods
+
+Principles:
+- Stateless
+- Resource-based (URL = resource)
+- Client-server separation
+
+Example:
+GET /users/1
+
+--------------------------------------------------
+
+🔹 GraphQL
+
+- Query language for APIs
+- Client specifies exact data needed
+
+Pros:
+- No over-fetching / under-fetching
+- Flexible queries
+
+Cons:
+- More complex backend
+
+--------------------------------------------------
+
+🔹 gRPC (Google RPC)
+
+- High-performance RPC framework
+- Uses Protocol Buffers (binary)
+- Runs over HTTP/2
+
+Use:
+- Microservices communication
+
+Pros:
+- Fast, efficient
+- Strong typing
+
+--------------------------------------------------
+
+🔹 SSE (Server-Sent Events)
+
+- Server → client streaming (one-way)
+- Uses HTTP connection
+
+Use:
+- Live notifications, updates
+
+--------------------------------------------------
+
+🔹 WebSockets (WS)
+
+- Full-duplex communication (bi-directional)
+- Persistent connection
+
+Use:
+- Chat apps
+- Real-time dashboards
+
+--------------------------------------------------
+
+🔹 WebRTC
+
+- Peer-to-peer real-time communication
+- Audio, video, data streaming
+
+Use:
+- Video calls, conferencing
+
+--------------------------------------------------
+
+🔹 Scaling
+
+Vertical Scaling:
+- Increase machine size (CPU, RAM)
+- Simple but limited
+
+Horizontal Scaling:
+- Add more machines
+- Highly scalable
+
+--------------------------------------------------
+
+🔹 Load Balancing
+
+- Distributes traffic across servers
+
+Types:
+
+1) Client-Side LB:
+- Client decides which server to hit
+
+2) Dedicated LB:
+- Separate service distributes requests
+
+--------------------------------------------------
+
+🔹 L4 vs L7 Load Balancer
+
+L4 (Transport Layer):
+- Works on IP + port
+- Faster, less intelligent
+
+L7 (Application Layer):
+- Works on HTTP (URL, headers)
+- Smarter routing
+
+--------------------------------------------------
+
+🔹 Regionalization
+
+- Deploy services in multiple regions
+- Reduce latency
+- Improve availability
+
+--------------------------------------------------
+
+🔹 Reliability Patterns
+
+Timeouts:
+- Stop waiting after fixed time
+
+Retries:
+- Retry failed requests
+
+Backoff:
+- Increase delay between retries
+
+--------------------------------------------------
+
+🔹 Cascading Failures
+
+- One service failure → chain reaction
+
+Example:
+Service A → B → C (C fails → all fail)
+
+--------------------------------------------------
+
+🔹 Circuit Breaker
+
+- Stops repeated calls to failing service
+
+States:
+- Closed → normal
+- Open → block calls
+- Half-open → test recovery
+
+--------------------------------------------------
+
+🔹 Key Interview Points
+
+- OSI = abstraction model (not real implementation)
+- TCP vs UDP = reliability vs speed trade-off
+- HTTP = stateless protocol over TCP
+- WebSockets/WebRTC = real-time communication
+- Horizontal scaling > vertical scaling
+- L4 vs L7 = speed vs intelligence
+- Circuit breaker prevents cascading failures
+
+--------------------------------------------------
+
+🧠 One-liner:
+Modern distributed systems rely on layered networking (OSI), transport protocols (TCP/UDP), and scalable communication patterns (HTTP, WebSockets, gRPC) with reliability mechanisms like retries and circuit breakers.
