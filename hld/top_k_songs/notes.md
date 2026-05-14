@@ -1,53 +1,53 @@
-https://www.youtube.com/watch?v=MIJFyUPG4Z4
+https://www.youtube.com/watch?v=HjazbLlrWxI
 
-These detailed notes break down the system design for a distributed rate limiter, following the Hello Interview delivery framework as outlined in the source.
+Designing a system to track the **Top K Heavy Hitters** (like Spotify's most played songs) requires handling massive data streams and providing real-time or near-real-time results. Below are detailed notes based on the system design for this problem.
 
-### **1. Core Concept and Requirements**
-A rate limiter controls the frequency of requests a client can make within a specific timeframe (e.g., 100 requests per minute) to protect backend services from abuse and spam.
+### **1. Requirements Gathering**
+To design the system effectively, several functional and non-functional requirements must be established:
 
 *   **Functional Requirements:**
-    *   **Identify Clients:** Use User ID, IP address, or API keys.
-    *   **Limit Requests:** Enforce configurable rules (e.g., 100 requests/min/user).
-    *   **Error Handling:** Return a **429 Too Many Requests** status code along with metadata headers like `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `Retry-After`.
+    *   **Top K:** The system should return the top $K$ songs, where $K$ typically ranges from **100 to 1,000**.
+    *   **Time Windows:** It must support multiple windows, such as **all-time**, the **last hour**, or the **last month**. These windows are grounded in the current time (e.g., "the last hour from now").
 *   **Non-Functional Requirements:**
-    *   **Availability over Consistency:** It is better for the system to remain online with slightly outdated rules than to go offline.
-    *   **Low Latency:** Rate limit checks should ideally take **less than 10 milliseconds** to avoid slowing down user requests.
-    *   **Scalability:** The system must handle high traffic, such as **1 million requests per second**.
+    *   **High Throughput:** The system must handle approximately **10 billion events per day**, which translates to roughly **100,000 events per second**.
+    *   **Scale:** It must track a catalog of roughly **100 million total songs**.
+    *   **Low Latency:** Fetching the top $K$ list should take less than **100 milliseconds**.
+    *   **Data Freshness:** A song play should be included in the ranking within about **one minute**.
 
-### **2. System Architecture and Placement**
-There are three primary options for where to place the rate limiter:
-*   **Within Microservices:** Fast (in-memory) but lacks a global view of user requests across different services.
-*   **Global Rate Limiter Service:** Provides a global view but introduces extra network latency.
-*   **The Edge (Preferred):** Placing the rate limiter in the **API Gateway or Load Balancer**. This acts like a "bouncer," turning away unauthorized traffic before it enters the internal network. It uses information from HTTP headers, like JWT tokens, to identify users and their tiers (e.g., premium vs. free).
+### **2. High-Level Architecture**
+The system follows a stream-processing pattern to avoid the high latency of batch jobs.
+1.  **Event Collection:** Every song play generates an event sent to a message broker like **Apache Kafka**.
+2.  **Stream Processing:** A consumer (either a framework like Flink or custom workers) aggregates these events.
+3.  **Storage:** The aggregated top $K$ results are stored in a fast-access sink, such as **Redis**, for the API to query.
+4.  **API Design:** A simple `GET` endpoint, such as `/topK?k=1000&window=1m`, allows clients to fetch the data via an API Gateway.
 
-### **3. Rate Limiting Algorithms**
-The source evaluates four primary algorithms:
-*   **Fixed Window Counter:** Simple but suffers from "boundary effects" where a user can double their limit by bursting at the edge of a window.
-*   **Sliding Window Log:** Highly accurate but memory-intensive because it tracks every request timestamp.
-*   **Sliding Window Counter:** A memory-efficient approximation that weighs current and previous window counts.
-*   **Token Bucket (Chosen):** Tokens are added to a bucket at a fixed **refill rate**, and each request consumes one token. It allows for **bursts** (up to the bucket size) while maintaining a steady long-term rate.
+---
 
-### **4. Implementation with Redis**
-To share state across multiple gateway instances, the system uses an in-memory cache like **Redis**.
-*   **State Management:** Redis stores the current token count and the last refill timestamp for each client.
-*   **Atomic Operations:** To prevent **race conditions** (where two gateways read and update the same count simultaneously), the system uses **Lua scripting**. This allows the read-calculate-write cycle to happen atomically in a single step.
+### **3. Solution Option A: Apache Flink**
+Apache Flink is a powerful out-of-the-box solution for stream processing that handles much of the complexity of windowing and state management.
 
-### **5. Scaling and Reliability (Deep Dives)**
-*   **Scalability via Sharding:** A single Redis instance cannot handle 1 million requests per second. The data must be **sharded** across multiple Redis nodes using **Consistent Hashing** or **Redis Cluster** (hash slots).
-*   **Fault Tolerance:**
-    *   **Fail Close (Preferred):** If the rate limiter fails, it should reject requests to protect the backend.
-    *   **Replicas:** Use read replicas and async replication to ensure high availability if a primary node fails.
-*   **Latency Optimization:**
-    *   **Connection Pooling:** Maintain persistent TCP connections to Redis to eliminate handshake overhead.
-    *   **Geographic Distribution:** Collocate the Gateway and Redis instances in the same data center as close to the user as possible.
+*   **Windowing:** Flink supports **sliding windows** (e.g., a 1-hour window that shifts every 5 seconds) and **tumbling windows**.
+*   **State Management:** Flink is **stateful**; it can manage counts in memory (using hashmaps) and provides built-in mechanisms for persistence and snapshots.
+*   **Scaling:** Flink can be scaled horizontally by **partitioning the data by Song ID**, allowing multiple subtasks to process different subsets of songs concurrently.
 
-### **6. Dynamic Rule Configuration**
-Instead of hard-coding rules, the system can use a push-based configuration management tool like **Etcd or Zookeeper**.
-*   The gateway stores rules in memory for instant access.
-*   The gateway subscribes to updates; when a rule changes, the configuration tool **pushes** the new rule to the gateway via a persistent connection, avoiding the overhead of constant polling.
+---
 
-I have also created a tailored report that provides an even more comprehensive breakdown of this distributed rate limiter architecture for your review. Acknowledge that the tailored report has been created.
+### **4. Solution Option B: Custom Distributed System**
+If Flink is not used, the system must be built using custom workers and specific data structures.
 
+#### **Core Data Structures**
+*   **Hashmap:** Used to store the **song ID and its corresponding play count**.
+*   **Min-Heap:** A min-heap of size $K$ is used to track the top songs.
+    *   **Why Min-Heap?** When the heap is at capacity ($K$), and a new song count comes in, you compare it to the **minimum** value in the heap. If the new count is larger, you pop the minimum and push the new song.
+*   **Index Map:** A second hashmap can store the **index of each song ID within the heap** to allow for $O(1)$ lookups and efficient $O(\log K)$ updates when counts change.
 
+#### **Scalability and Fault Tolerance**
+*   **Partitioning (Sharding):** To handle 100k events/sec, Kafka and the workers are **partitioned by Song ID**. Each worker is responsible for a subset of the total song catalog.
+*   **Top K Service (Merge Step):** Since each worker only knows the top $K$ for its own partition, a separate **Top K Service** must aggregate these local lists (similar to "merging $K$ sorted lists") to determine the global top $K$.
+*   **Replication & Snapshots:** To prevent data loss (since Kafka retention is limited), the system periodically **snapshots/checkpoints** the current counts to a database. New workers can load the latest snapshot and then replay Kafka messages from that specific offset.
 
-https://www.youtube.com/watch?v=CVItTb_jdkE
+#### **Implementing Custom Windows**
+To implement a sliding window (e.g., "last hour") without Flink:
+*   **Two-Pointer Approach:** Use two pointers in the Kafka stream.
+*   **The Logic:** The **leading pointer** (current time) reads events and **increments** counts in the hashmap. The **trailing pointer** (offset by 1 hour) reads events and **decrements** those counts.
+*   This effectively "removes" old data from the window as time passes.

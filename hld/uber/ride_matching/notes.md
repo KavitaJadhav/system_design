@@ -1,6 +1,8 @@
-*https://www.youtube.com/watch?v=twUz_hWw2T8
-*https://www.youtube.com/watch?v=6K6ihHNkO_0
-*https://www.youtube.com/watch?v=lsKU38RKQSo
+https://www.youtube.com/watch?v=twUz_hWw2T8
+
+https://www.youtube.com/watch?v=6K6ihHNkO_0
+
+https://www.youtube.com/watch?v=lsKU38RKQSo
 
 These notes synthesize the system design for a ride-sharing application like Uber or Lyft, focusing on scalability, proximity search, and consistency, based on the provided sources.
 

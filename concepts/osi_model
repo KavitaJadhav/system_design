@@ -12,6 +12,14 @@ OSI MODEL – 7 LAYERS QUICK NOTES
 Data Flow:
 Sender → Layer 7 → ... → Layer 1 → Network → Layer 1 → ... → Layer 7 → Receiver
 
+Layers (Top → Bottom):
+7. Application → HTTP, APIs
+6. Presentation → Encoding, Encryption
+5. Session → Connection management
+4. Transport → TCP / UDP
+3. Network → IP (routing)
+2. Data Link → MAC, frames
+1. Physical → Bits, cables
 --------------------------------------------------
 
 🔹 7 Layers (Top → Bottom)
